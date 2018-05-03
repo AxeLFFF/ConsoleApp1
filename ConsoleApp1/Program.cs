@@ -7,10 +7,23 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             Console.WriteLine("Hello .NET Core again!");
-            Console.Write($"Enter path to audio{Environment.NewLine}");
-            string audio = Console.ReadLine();
-            TextToSpeechProvider.Audio2Text(audio);
-            Console.ReadLine();
+            Console.Write($"Enter city name{Environment.NewLine}");
+            string city = Console.ReadLine();
+            Weather2Base w = new Weather2Base(city);
+            string input = default(string);
+            while(input != "c" || input != "exit")
+            {
+                input = Console.ReadLine();
+                switch (input)
+                {
+                    case "update":
+                        w.UpdateWeather().Wait();
+                        break;
+                    default:
+                        w.GetLastNotes(Convert.ToInt32(input));
+                        break;
+                }
+            }
         }
     }
 }
