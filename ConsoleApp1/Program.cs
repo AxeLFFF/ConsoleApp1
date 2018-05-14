@@ -17,10 +17,10 @@ namespace ConsoleApp1
                 switch (input)
                 {
                     case "update":
-                        w.UpdateWeather().Wait();
+                        w.UpdateWeatherAsync().Wait();
                         break;
                     default:
-                        w.GetLastNotes(Convert.ToInt32(input));
+                        w.ShowLastNotes(Convert.ToInt32(input));
                         break;
                 }
             }

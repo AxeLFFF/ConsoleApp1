@@ -17,14 +17,27 @@ namespace ConsoleApp1
         public Weather2Base(string cityName)
         {
             this.NotesContext = new WeatherNotesContext();
-            this.WeatherMapClient = new OpenWeatherMapClient();
+            this.WeatherMapClient = new OpenWeatherMapClient() { AppId = "aaed34ba968cee384865edc13f38c775" };
             this.CityName = cityName;
         }
 
-        public async Task UpdateWeather()
+        public async Task UpdateWeatherAsync()
         {
             var currentWeather = await this.WeatherMapClient.CurrentWeather.
                 GetByName(this.CityName, MetricSystem.Metric, OpenWeatherMapLanguage.RU);
+            WeatherNote note = new WeatherNote()
+            {
+                Temperature = (int)currentWeather.Temperature.Value,
+                WindSpeed = (int)currentWeather.Wind.Speed.Value,
+                Moment = DateTime.Now
+            };
+            this.NoteToDB(note);
+        }
+
+        public void UpdateWeather()
+        {
+            var currentWeather = this.WeatherMapClient.CurrentWeather.
+                GetByName(this.CityName, MetricSystem.Metric, OpenWeatherMapLanguage.RU).GetAwaiter().GetResult();
             WeatherNote note = new WeatherNote()
             {
                 Temperature = (int)currentWeather.Temperature.Value,
@@ -52,6 +65,14 @@ namespace ConsoleApp1
                     $"wind={n.WindSpeed.ToString()}");
             }
             return noteList.ToArray();
+        }
+
+        public void ShowLastNotes(int count)
+        {
+            foreach(var n in this.GetLastNotes(count))
+            {
+                Console.WriteLine(n);
+            }
         }
 
         public void Dispose()
